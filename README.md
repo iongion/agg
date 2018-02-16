@@ -1,3 +1,8 @@
+Upgrade cmake to 3.10.0+
+```
+python -m pip install cmake --user
+```
+
 Enable conan bincrafters remote
 ```
 conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan

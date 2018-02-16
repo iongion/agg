@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.5.1)
 project(agg)
 set (agg_VERSION_MAJOR 2)
 set (agg_VERSION_MINOR 5)
 
-add_definitions("-std=c++11")
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
@@ -55,14 +57,15 @@ set(
   gpc/gpc.c
 )
 
-# this is the "object library" target: compiles the sources only once
-add_library(objlib OBJECT ${libsrc})
+# objects
+add_library(core OBJECT ${libsrc})
+set_property(TARGET core PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-# shared libraries need PIC
-set_property(TARGET ${objlib} PROPERTY POSITION_INDEPENDENT_CODE 1)
+# shared
+add_library(agg SHARED $<TARGET_OBJECTS:core>)
 
-# shared and static libraries built from the same object files
-# add_library(agg SHARED $<TARGET_OBJECTS:objlib>)
-add_library(agg STATIC $<TARGET_OBJECTS:objlib>)
+# static
+add_library(agg_static STATIC $<TARGET_OBJECTS:core>)
+set_target_properties(agg_static PROPERTIES OUTPUT_NAME agg)
 
-# target_link_libraries(agg ${CONAN_LIBS})
+target_link_libraries(agg ${CONAN_LIBS})

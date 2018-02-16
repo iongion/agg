@@ -561,7 +561,12 @@ namespace agg
             if(len > 0)
             {
                 m_loaded_font.resize(len);
-                fread(&m_loaded_font[0], 1, len, fd);
+                size_t amount = fread(&m_loaded_font[0], 1, len, fd);
+                if (amount == 0) {
+                    if (ferror(fd)) {
+                        fprintf(stderr, "There was an error while loading the font\n");
+                    }
+                }
                 m_font = &m_loaded_font[0];
             }
             fclose(fd);
