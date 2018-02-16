@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(agg)
+
+find_package(X11 REQUIRED)
+
+include_directories(${X11_INCLUDE_DIR})
+link_directories(${X11_LIBRARIES})
+
 set (agg_VERSION_MAJOR 2)
 set (agg_VERSION_MINOR 5)
 
@@ -68,4 +74,6 @@ add_library(agg SHARED $<TARGET_OBJECTS:core>)
 add_library(agg_static STATIC $<TARGET_OBJECTS:core>)
 set_target_properties(agg_static PROPERTIES OUTPUT_NAME agg)
 
-target_link_libraries(agg ${CONAN_LIBS})
+# examples
+add_executable(aa_demo examples/aa_demo.cpp src/platform/X11/agg_platform_support.cpp ${X11_LIBRARIES})
+target_link_libraries(aa_demo LINK_PUBLIC agg_static)
